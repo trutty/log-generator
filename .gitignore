@@ -1,0 +1,9 @@
+# JetBrains IDE
+.idea/
+*.iml
+
+# java builds
+target/
+
+# osx
+.DS_Store
