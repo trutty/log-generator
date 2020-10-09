@@ -33,21 +33,29 @@ import java.util.stream.IntStream;
 @Component
 public class ScheduledTasks {
 
-    private static final Logger log = LoggerFactory.getLogger(ScheduledTasks.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScheduledTasks.class);
+    private static final String[] TAGS = new String[]{"SECURITY", "AUDIT", "INFO"};
 
-    private static final String[] TAGS = new String[]{
-            "SECURITY",
-            "AUDIT",
-            "INFO"
-    };
+    @Scheduled(fixedRate = 3000)
+    public void logInfo() {
+        LOGGER.info("Info at {}", getCurrentTime(), getStructuredArgument());
+    }
+
+    @Scheduled(fixedRate = 6000)
+    public void logErrorWithStacktrace() {
+        LOGGER.error("Error at {}", getCurrentTime(), new RuntimeException("My test RuntimeException"));
+    }
+
+    @Scheduled(fixedRate = 10000)
+    public void throwExceptionWithoutLogStatement() {
+        throw new ArithmeticException("My test RuntimeException without explicit logging");
+    }
 
     private static String getCurrentTime() {
         return Instant.now().atZone(ZoneOffset.UTC).format(DateTimeFormatter.ISO_DATE_TIME);
     }
 
-    @Scheduled(fixedRate = 3000)
-    public void log() {
-
+    private static StructuredArgument getStructuredArgument() {
         // We want to append 0..len(TAGS) tag values to the log message
         int numberOfTags = ThreadLocalRandom.current().nextInt(0, TAGS.length + 1);
 
@@ -58,8 +66,6 @@ public class ScheduledTasks {
                 .collect(Collectors.toSet());
 
         // Log info message with appended structured arguments
-        StructuredArgument structuredArgument = StructuredArguments.v("tags", tagsToAppend);
-        log.info("The time is now {}", getCurrentTime(), structuredArgument);
+        return StructuredArguments.v("tags", tagsToAppend);
     }
-
 }
