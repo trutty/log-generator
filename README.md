@@ -20,3 +20,6 @@ Does nothing else.
 
 # Build
 Run `maven clean package` to build `target/log-generator.jar` file. Run spring boot application with `java -jar target/log-generator.jar`
+
+# Configuration
+Set the environment variable `LOG_RATE_IN_MILLISECONDS` to a string value of your choice (default "10000").
