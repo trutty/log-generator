@@ -27,5 +27,4 @@ The generation of logs can be configured by setting environment variables:
 | environment variable     | description                                                                       | default value |
 |--------------------------|-----------------------------------------------------------------------------------|---------------|
 | LOG_RATE_IN_MILLISECONDS | String value of log rate/frequency                                                | "5000"        |
-| GENERATE_SECURITY_LOGS   | Boolean string value to control the generation of logs with tag "SECURITY"        | "true"        |
-| GENERATE_EXCEPTION_LOGS  | Boolean string value to control the generation of exception logs with stack trace | "true"        |
+| TAGS   | Comma separated values of tags that should be appended to the log message (e.g. "INFO,SECURITY")        | ""        |
