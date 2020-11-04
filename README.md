@@ -22,4 +22,10 @@ Does nothing else.
 Run `maven clean package` to build `target/log-generator.jar` file. Run spring boot application with `java -jar target/log-generator.jar`
 
 # Configuration
-Set the environment variable `LOG_RATE_IN_MILLISECONDS` to a string value of your choice (default "10000").
+The generation of logs can be configured by setting environment variables:
+
+| environment variable     | description                                                                       | default value |
+|--------------------------|-----------------------------------------------------------------------------------|---------------|
+| LOG_RATE_IN_MILLISECONDS | String value of log rate/frequency                                                | "5000"        |
+| GENERATE_SECURITY_LOGS   | Boolean string value to control the generation of logs with tag "SECURITY"        | "true"        |
+| GENERATE_EXCEPTION_LOGS  | Boolean string value to control the generation of exception logs with stack trace | "true"        |

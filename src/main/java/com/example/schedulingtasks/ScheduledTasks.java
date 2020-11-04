@@ -9,60 +9,57 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.time.Instant;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Component
 @EnableAsync
 public class ScheduledTasks {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ScheduledTasks.class);
-    private static final String[] TAGS = new String[]{"SECURITY", "AUDIT", "INFO"};
 
-    private static final Runnable[] RUNNABLES = new Runnable[]{
-            ScheduledTasks::logInfo,
-            ScheduledTasks::logErrorWithStacktrace,
-            ScheduledTasks::throwExceptionWithoutLogStatement
-    };
+    private static final Runnable[] RUNNABLES;
+
+    static {
+        final List<Runnable> runnables = new ArrayList<>();
+        runnables.add(ScheduledTasks::log);
+
+        if (SchedulingTasksApplication.GENERATE_EXCEPTION_LOGS) {
+            runnables.add(ScheduledTasks::throwException);
+        }
+
+        RUNNABLES = runnables.toArray(new Runnable[0]);
+    }
+
+    private static final String[] TAGS;
+
+    static {
+        final List<String> tags = new ArrayList<>();
+        tags.add("INFO");
+
+        if (SchedulingTasksApplication.GENERATE_SECURITY_LOGS) {
+            tags.add("SECURITY");
+        }
+
+        TAGS = tags.toArray(new String[0]);
+    }
 
     @Async
     @Scheduled(fixedRateString = "${LOG_RATE_IN_MILLISECONDS}")
-    public void log() {
+    public void scheduled() {
         RUNNABLES[ThreadLocalRandom.current().nextInt(0, RUNNABLES.length)].run();
     }
 
-    public static void logInfo() {
-        LOGGER.info("Info at {}", getCurrentTime(), getStructuredArgument());
+    public static void log() {
+        String tag = TAGS[ThreadLocalRandom.current().nextInt(0, TAGS.length)];
+        StructuredArgument s = StructuredArguments.v("tags", new String[]{tag});
+
+        LOGGER.info("Just logging some info message with any content to have some data and tag '{}'", s);
     }
 
-    public static void logErrorWithStacktrace() {
-        LOGGER.error("Error at {}", getCurrentTime(), new RuntimeException("My test RuntimeException"));
-    }
-
-    public static void throwExceptionWithoutLogStatement() {
+    public static void throwException() {
         throw new ArithmeticException("My test RuntimeException without explicit logging");
     }
 
-    private static String getCurrentTime() {
-        return Instant.now().atZone(ZoneOffset.UTC).format(DateTimeFormatter.ISO_DATE_TIME);
-    }
-
-    private static StructuredArgument getStructuredArgument() {
-        // We want to append 0..len(TAGS) tag values to the log message
-        int numberOfTags = ThreadLocalRandom.current().nextInt(0, TAGS.length + 1);
-
-        // Choose which tags should be appended
-        final Set<String> tagsToAppend = IntStream.range(0, numberOfTags)
-                .map(unused -> ThreadLocalRandom.current().nextInt(0, TAGS.length))
-                .mapToObj(nextInt -> TAGS[nextInt])
-                .collect(Collectors.toSet());
-
-        // Log info message with appended structured arguments
-        return StructuredArguments.v("tags", tagsToAppend);
-    }
 }
