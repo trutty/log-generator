@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static com.example.schedulingtasks.SchedulingTasksApplication.TAGS;
 
@@ -19,6 +20,9 @@ public class ScheduledTasks {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ScheduledTasks.class);
 
+    // thread-safe counter
+    private static final AtomicLong COUNTER = new AtomicLong(1);
+
     // Creates log message which is 1024 bytes long in JSON format
     private static final String LOG_MESSAGE = "Lorem ipsum dolor sit amet consectetur adipiscing elit taciti ultrices, cum potenti ridiculus leo varius porta fermentum. Turpis a habitant vivamus integer sollicitudin nulla torquent, litora ridiculus etiam ullamcorper porta aliquet consequat sed, posuere imperdiet orci varius curabitur montes. Ad molestie et curae felis eu sed mi lacinia euismod, vel consequat inceptos nascetur penatibus ultricies mauris natoque. Cras proin fames blandit gravida consequat tincidunt vivamus malesuada torquent, curabitur ante risus luctus nibh dapibus vestibulum duis senectus, class volutpat integer mus pulvinar euismod pharetra fermentum. Imperdiet ullamcorper cubilia tortor phasellus laoreet augue placerat rhoncus netus, integer congue tempor dapibus eget senectus tempus elementum habitant, etiam aenean auctor snectus tempus";
 
@@ -27,7 +31,8 @@ public class ScheduledTasks {
     public void scheduled() {
         String tag = TAGS[ThreadLocalRandom.current().nextInt(0, TAGS.length)];
         StructuredArgument s = StructuredArguments.v("tags", new String[]{tag});
-        LOGGER.info("{} {}", LOG_MESSAGE, s);
+        StructuredArgument c = StructuredArguments.kv("counter", COUNTER.getAndIncrement());
+        LOGGER.info("{} {} {}", LOG_MESSAGE, s, c);
     }
 
 }
