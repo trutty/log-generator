@@ -1,5 +1,5 @@
 # Purpose
-Very basic Spring Boot application for testing purposes. Generates log statements in Logstash format in the form of:
+Very basic Spring Boot application for testing purposes. Each log statement is ~1KB in size. Generates log statements in Logstash format in the form of:
 ```json
 {
    "@timestamp":"2020-10-08T20:42:24.361Z",
@@ -26,5 +26,5 @@ The generation of logs can be configured by setting environment variables:
 
 | environment variable     | description                                                                       | default value |
 |--------------------------|-----------------------------------------------------------------------------------|---------------|
-| LOG_RATE_IN_MILLISECONDS | String value of log rate/frequency                                                | "5000"        |
+| LOG_RATE_IN_MILLISECONDS | String value of log rate/frequency                                                | "5"        |
 | TAGS   | Comma separated values of tags that should be appended to the log message (e.g. "INFO,SECURITY")        | ""        |
