@@ -1,5 +1,5 @@
 # Purpose
-Very basic Spring Boot application for testing purposes. Each log statement is ~1KB in size. Generates log statements in Logstash format in the form of:
+Very basic Spring Boot application for testing purposes with unique incrementing counter per log message. Each log statement is ~1KB in size. Generates log statements in Logstash format in the form of:
 ```json
 {
    "@timestamp":"2020-10-08T20:42:24.361Z",
@@ -11,7 +11,8 @@ Very basic Spring Boot application for testing purposes. Each log statement is ~
    "level_value":20000,
    "tags":[
       "SECURITY"
-   ]
+   ],
+   "counter": 1
 }
 ``` 
 **Note**: Pretty printed here but actually logged as one line.
