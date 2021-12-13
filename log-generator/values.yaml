@@ -1,0 +1,32 @@
+replicaCount: 1
+
+image:
+  repository: trutty/log-generator
+  pullPolicy: Always
+  tag: "0.5"
+
+logRateInMilliseconds: "1000"
+
+serviceAccount:
+  create: false
+  annotations: {}
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+securityContext:
+  runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+
+serviceMonitor:
+  create: false
+
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
